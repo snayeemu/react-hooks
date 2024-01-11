@@ -1,24 +1,20 @@
-import { useReducer } from "react";
-
-type CurrentStateType = {
-  count: number;
-};
+import { ChangeEvent, useReducer } from "react";
 
 type ActionType = {
-  type: "increment" | "decrement" | "incrementByAmount";
-  payload?: number;
+  type: "addName" | "addEmail";
+  payload?: string;
 };
 
 const UseReducerExample = () => {
-  const initialState = { count: 0 };
+  const initialState = { name: "", email: "" };
 
-  const reducer = (currentState, action: ActionType) => {
+  const reducer = (currentState: typeof initialState, action: ActionType) => {
     switch (action.type) {
-      case "increment":
-        return { count: currentState.count + 1 };
+      case "addName":
+        return { ...currentState, name: action.payload };
 
-      case "decrement":
-        return { count: currentState.count - 1 };
+      case "addEmail":
+        return { ...currentState, email: action.payload };
 
       default:
         return currentState.count;
@@ -27,27 +23,36 @@ const UseReducerExample = () => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(state);
+  };
+
   return (
     <div>
-      <h1>{state.count}</h1>
-      <button
-        onClick={() => dispatch({ type: "increment" })}
-        className="btn bg-blue-500"
-      >
-        increment
-      </button>
-      <button
-        onClick={() => dispatch({ type: "incrementByAmount", payload: 3 })}
-        className="btn bg-blue-500"
-      >
-        incrementBy3
-      </button>
-      <button
-        onClick={() => dispatch({ type: "decrement" })}
-        className="btn bg-red-500"
-      >
-        decrement
-      </button>
+      <form onSubmit={handleSubmit}>
+        <input
+          className="border-2"
+          onChange={(e) =>
+            dispatch({ type: "addName", payload: e.target.value })
+          }
+          type="text"
+          name="name"
+          id="name"
+        />
+        <input
+          className="border-2"
+          onChange={(e) =>
+            dispatch({ type: "addEmail", payload: e.target.value })
+          }
+          type="email"
+          name="email"
+          id="email"
+        />
+        <button className="bg-blue-200" type="submit">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
